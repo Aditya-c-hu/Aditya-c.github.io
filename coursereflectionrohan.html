@@ -1,1 +1,118 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #eeeeee;
+            line-height: 1.8;
+        }
+        header {
+            background: linear-gradient(135deg, #333333, #4d4d4d);
+            color: #ffffff;
+            text-align: center;
+            padding: 30px 10px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        header p {
+            font-size: 1em;
+            margin-top: 5px;
+        }
+        .container {
+            margin: 20px auto;
+            padding: 30px;
+            max-width: 100%;
+        }
+        section {
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #333333;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #ffffff;
+            border-bottom: 2px solid #4d4d4d;
+            padding-bottom: 5px;
+        }
+        p {
+            font-size: 1em;
+            margin-bottom: 15px;
+            color: #cccccc;
+        }
+        .list-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .list-column {
+            flex: 1;
+            min-width: 200px;
+        }
+        ul {
+            margin: 15px 0;
+            padding-left: 20px;
+            color: #cccccc;
+        }
+        li {
+            margin-bottom: 10px;
+            color: #cccccc;
+        }
+        strong {
+            color: #ffffff;
+        }
+        /* Button Styling */
+        .button-container {
+            margin: 40px 0;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        .course-project-button {
+            background: linear-gradient(135deg, #333333, #4d4d4d);
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+        .course-project-button:hover {
+            background: linear-gradient(135deg, #1a1a1a, #333333);
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            .container {
+                padding: 20px;
+            }
+            section {
+                padding: 20px;
+            }
+            .course-project-button {
+                font-size: 1em;
+                padding: 10px 20px;
+            }
+            .list-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
