@@ -33,6 +33,395 @@
 </head>
 <body>
     <h1>Anantavaram Port Efficiency Study</h1>
+    <h1>Graphs and Trees Visualization</h1>
+    <div class="container">
+        <div class="graph">
+            <h2>Graph Representation</h2>
+            <div class="box">
+                <pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+#define MAX 100
+
+// Graph Node
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Graph Structure
+typedef struct Graph {
+    int vertices;
+    int** adjMatrix;
+    Node** adjList;
+} Graph;
+
+// Tree Node
+typedef struct TreeNode {
+    char name[50];
+    struct TreeNode* left;
+    struct TreeNode* right;
+} TreeNode;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+TreeNode* createTreeNode(const char* name) {
+    TreeNode* newNode = (TreeNode*)malloc(sizeof(TreeNode));
+    strcpy(newNode->name, name);
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+Graph* createGraph(int vertices) {
+    Graph* graph = (Graph*)malloc(sizeof(Graph));
+    graph->vertices = vertices;
+    graph->adjMatrix = (int*)malloc(vertices * sizeof(int));
+    graph->adjList = (Node*)malloc(vertices * sizeof(Node));
+    for (int i = 0; i < vertices; i++) {
+        graph->adjMatrix[i] = (int*)calloc(vertices, sizeof(int));
+        graph->adjList[i] = NULL;
+    }
+    return graph;
+}
+
+void addEdgeMatrix(Graph* graph, int src, int dest) {
+    graph->adjMatrix[src][dest] = 1;
+    graph->adjMatrix[dest][src] = 1;
+}
+
+void addEdgeList(Graph* graph, int src, int dest) {
+    Node* newNode = createNode(dest);
+    newNode->next = graph->adjList[src];
+    graph->adjList[src] = newNode;
+    newNode = createNode(src);
+    newNode->next = graph->adjList[dest];
+    graph->adjList[dest] = newNode;
+}
+
+void displayAdjMatrix(Graph* graph) {
+    printf("\nAdjacency Matrix:\n");
+    for (int i = 0; i < graph->vertices; i++) {
+        for (int j = 0; j < graph->vertices; j++) {
+            printf("%d ", graph->adjMatrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void displayAdjList(Graph* graph) {
+    printf("\nAdjacency List:\n");
+    for (int i = 0; i < graph->vertices; i++) {
+        printf("Vertex %d: ", i);
+        Node* temp = graph->adjList[i];
+        while (temp) {
+            printf("%d -> ", temp->data);
+            temp = temp->next;
+        }
+        printf("NULL\n");
+    }
+}
+
+void dfsUtil(Graph* graph, int vertex, int* visited) {
+    visited[vertex] = 1;
+    printf("%d ", vertex);
+    Node* temp = graph->adjList[vertex];
+    while (temp) {
+        if (!visited[temp->data]) {
+            dfsUtil(graph, temp->data, visited);
+        }
+        temp = temp->next;
+    }
+}
+
+void dfs(Graph* graph, int start) {
+    int visited[MAX] = {0};
+    printf("\nDFS Traversal starting from vertex %d:\n", start);
+    dfsUtil(graph, start, visited);
+}
+
+void bfs(Graph* graph, int start) {
+    int visited[MAX] = {0};
+    int queue[MAX], front = 0, rear = 0;
+    queue[rear++] = start;
+    visited[start] = 1;
+    printf("\nBFS Traversal starting from vertex %d:\n", start);
+    while (front < rear) {
+        int current = queue[front++];
+        printf("%d ", current);
+        Node* temp = graph->adjList[current];
+        while (temp) {
+            if (!visited[temp->data]) {
+                queue[rear++] = temp->data;
+                visited[temp->data] = 1;
+            }
+            temp = temp->next;
+        }
+    }
+}
+
+void displayTree(TreeNode* root, int level) {
+    if (root == NULL) return;
+    for (int i = 0; i < level; i++) printf("   ");
+    printf("%s\n", root->name);
+    displayTree(root->left, level + 1);
+    displayTree(root->right, level + 1);
+}
+
+int main() {
+    int vertices, edges, src, dest, startVertex;
+    printf("Enter the number of vertices in the graph: ");
+    scanf("%d", &vertices);
+    Graph* graph = createGraph(vertices);
+    printf("Enter the number of edges: ");
+    scanf("%d", &edges);
+    printf("Enter edges (source and destination):\n");
+    for (int i = 0; i < edges; i++) {
+        scanf("%d %d", &src, &dest);
+        addEdgeMatrix(graph, src, dest);
+        addEdgeList(graph, src, dest);
+    }
+    displayAdjMatrix(graph);
+    displayAdjList(graph);
+    printf("Enter the starting vertex for DFS: ");
+    scanf("%d", &startVertex);
+    dfs(graph, startVertex);
+    printf("\nEnter the starting vertex for BFS: ");
+    scanf("%d", &startVertex);
+    bfs(graph, startVertex);
+    TreeNode* root = createTreeNode("Port");
+    root->left = createTreeNode("Operations");
+    root->right = createTreeNode("Logistics");
+    root->left->left = createTreeNode("Loading");
+    root->left->right = createTreeNode("Unloading");
+    root->right->left = createTreeNode("Storage");
+    root->right->right = createTreeNode("Transport");
+    printf("\nHierarchical Tree Structure:\n");
+    displayTree(root, 0);
+    return 0;
+}
+                </pre>
+            </div>
+        </div>
+            <div class="container">
+        <h1>Knapsack Problem - Dynamic Programming</h1>
+        <p>The following C program demonstrates the dynamic programming solution for the Knapsack Problem, which helps allocate resources efficiently.</p>
+
+        <h3>C Code Implementation</h3>
+        <pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+void knapsack(int weights[], int values[], int n, int capacity) {
+    int dp[n + 1][capacity + 1];
+    for (int i = 0; i <= n; i++) {
+        for (int w = 0; w <= capacity; w++) {
+            if (i == 0 || w == 0) {
+                dp[i][w] = 0;
+            } else if (weights[i - 1] <= w) {
+                dp[i][w] = max(values[i - 1] + dp[i - 1][w - weights[i - 1]], dp[i - 1][w]);
+            } else {
+                dp[i][w] = dp[i - 1][w];
+            }
+        }
+    }
+
+    printf("\nMaximum value: %d\n", dp[n][capacity]);
+    printf("Selected cargos:\n");
+    int w = capacity;
+    for (int i = n; i > 0 && dp[i][w] > 0; i--) {
+        if (dp[i][w] != dp[i - 1][w]) {
+            printf("Cargo %d (Weight: %d, Value: %d)\n", i, weights[i - 1], values[i - 1]);
+            w -= weights[i - 1];
+        }
+    }
+}
+
+int main() {
+    int n, capacity;
+    printf("Enter the number of cargo types: ");
+    scanf("%d", &n);
+
+    int weights[n], values[n];
+    for (int i = 0; i < n; i++) {
+        printf("Enter weight and value for cargo type %d:\n", i + 1);
+        scanf("%d %d", &weights[i], &values[i]);
+    }
+
+    printf("Enter the maximum resource capacity: ");
+    scanf("%d", &capacity);
+
+    knapsack(weights, values, n, capacity);
+
+    return 0;
+}
+        </pre>
+    </div>
+
+    <div class="container">
+        <h1>Hash Table - Efficient Data Management</h1>
+        <p>The following C program implements a Hash Table for efficient data retrieval and storage.</p>
+
+        <h3>C Code Implementation</h3>
+        <pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+#define TABLE_SIZE 100
+
+typedef struct Data {
+    char key[50];
+    char value[100];
+} Data;
+
+typedef struct HashTable {
+    Data* table[TABLE_SIZE];
+} HashTable;
+
+unsigned int hash(const char* key) {
+    unsigned int hash = 0;
+    for (int i = 0; key[i] != '\0'; i++) {
+        hash = (hash * 31 + key[i]) % TABLE_SIZE;
+    }
+    return hash;
+}
+
+HashTable* createHashTable() {
+    HashTable* ht = (HashTable*)malloc(sizeof(HashTable));
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        ht->table[i] = NULL;
+    }
+    return ht;
+}
+
+void insert(HashTable* ht, const char* key, const char* value) {
+    unsigned int index = hash(key);
+    while (ht->table[index] != NULL) {
+        if (strcmp(ht->table[index]->key, key) == 0) {
+            strcpy(ht->table[index]->value, value);
+            return;
+        }
+        index = (index + 1) % TABLE_SIZE;
+    }
+    ht->table[index] = (Data*)malloc(sizeof(Data));
+    strcpy(ht->table[index]->key, key);
+    strcpy(ht->table[index]->value, value);
+}
+
+char* search(HashTable* ht, const char* key) {
+    unsigned int index = hash(key);
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        unsigned int probeIndex = (index + i) % TABLE_SIZE;
+        if (ht->table[probeIndex] == NULL) {
+            return NULL;
+        }
+        if (strcmp(ht->table[probeIndex]->key, key) == 0) {
+            return ht->table[probeIndex]->value;
+        }
+    }
+    return NULL;
+}
+
+void delete (HashTable* ht, const char* key) {
+    unsigned int index = hash(key);
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        unsigned int probeIndex = (index + i) % TABLE_SIZE;
+        if (ht->table[probeIndex] == NULL) {
+            return;
+        }
+        if (strcmp(ht->table[probeIndex]->key, key) == 0) {
+            free(ht->table[probeIndex]);
+            ht->table[probeIndex] = NULL;
+            return;
+        }
+    }
+}
+
+void display(HashTable* ht) {
+    printf("\nHash Table Contents:\n");
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        if (ht->table[i] != NULL) {
+            printf("Index %d: Key: %s, Value: %s\n", i, ht->table[i]->key, ht->table[i]->value);
+        }
+    }
+}
+
+void freeHashTable(HashTable* ht) {
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        if (ht->table[i] != NULL) {
+            free(ht->table[i]);
+        }
+    }
+    free(ht);
+}
+
+int main() {
+    HashTable* ht = createHashTable();
+    int choice;
+    char key[50], value[100];
+
+    do {
+        printf("\n1. Insert Record\n");
+        printf("2. Search Record\n");
+        printf("3. Delete Record\n");
+        printf("4. Display Hash Table\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter Key: ");
+                scanf("%s", key);
+                printf("Enter Value: ");
+                scanf(" %[^\n]s", value);
+                insert(ht, key, value);
+                break;
+            case 2:
+                printf("Enter Key to Search: ");
+                scanf("%s", key);
+                char* result = search(ht, key);
+                if (result) {
+                    printf("Value Found: %s\n", result);
+                } else {
+                    printf("Key Not Found.\n");
+                }
+                break;
+            case 3:
+                printf("Enter Key to Delete: ");
+                scanf("%s", key);
+                delete (ht, key);
+                printf("Record Deleted.\n");
+                break;
+            case 4:
+                display(ht);
+                break;
+            case 5:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid Choice.\n");
+        }
+    } while (choice != 5);
+
+    freeHashTable(ht);
+    return 0;
+        </pre>
+    </div>
+
+
     <h2>Sorting Algorithms</h2>
     <p>Efficient scheduling of vessel arrivals and departures is crucial to minimize waiting times and berth occupancy rates. Priority Queues (Heaps) and Greedy Algorithms are used to manage these tasks.</p>
     <pre><code>
