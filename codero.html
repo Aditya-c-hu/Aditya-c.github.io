@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transportation System Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        pre {
+            background-color: #2e2e2e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <pre>
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <set>
+#include <stack>
+#include <limits>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+// ------------------------- Graph for Routes -------------------------
+class Graph {
+    unordered_map<string, vector<pair<string, double>>> adjList;
+
+public:
+    void addRoute(const string &from, const string &to, double distance) {
+        adjList[from].push_back({to, distance});
+        adjList[to].push_back({from, distance});  // Bidirectional routes
+    }
+
+    void displayRoutes() {
+        for (const auto &pair : adjList) {
+            cout << pair.first << " -> ";
+            for (const auto &neighbor : pair.second) {
+                cout << "(" << neighbor.first << ", " << neighbor.second << " km) ";
+            }
+            cout << endl;
+        }
+    }
+
+    // --------------------- Dijkstra's Algorithm ---------------------
+    void dijkstra(const string &source, const string &destination) {
+        unordered_map<string, double> dist;
+        unordered_map<string, string> parent;
+        set<pair<double, string>> pq;
+
+        // Initialize distances to infinity
+        for (const auto &pair : adjList) {
+            dist[pair.first] = numeric_limits<double>::infinity();
+        }
+        dist[source] = 0.0;
+        pq.insert({0.0, source});
+
+        while (!pq.empty()) {
+            auto top = *pq.begin();
+            pq.erase(pq.begin());
+            double curDist = top.first;
+            string curNode = top.second;
+
+            if (curNode == destination) {
+                cout << "Shortest Distance: " << curDist << " km\nPath: ";
+                stack<string> path;
+                string node = destination;
+                while (node != source) {
+                    path.push(node);
+                    node = parent[node];
+                }
+                path.push(source);
+                while (!path.empty()) {
+                    cout << path.top();
+                    path.pop();
+                    if (!path.empty()) cout << " -> ";
+                }
+                cout << endl;
+                return;
+            }
+
+            for (const auto &neighbor : adjList[curNode]) {
+                string nextNode = neighbor.first;
+                double weight = neighbor.second;
+
+                if (curDist + weight < dist[nextNode]) {
+                    pq.erase({dist[nextNode], nextNode});
+                    dist[nextNode] = curDist + weight;
+                    parent[nextNode] = curNode;
+                    pq.insert({dist[nextNode], nextNode});
+                }
+            }
+        }
+        cout << "No path found from " << source << " to " << destination << endl;
+    }
+
+    // --------------------- Prim's Algorithm for MST ---------------------
+    void primMST() {
+        unordered_map<string, bool> inMST;
+        set<pair<double, pair<string, string>>> edges;
+
+        if (adjList.empty()) {
+            cout << "No routes available to form a MST.\n";
+            return;
+        }
+
+        auto start = adjList.begin()->first;
+        inMST[start] = true;
+
+        for (const auto &neighbor : adjList[start]) {
+            edges.insert({neighbor.second, {start, neighbor.first}});
+        }
+
+        cout << "Minimum Spanning Tree (MST):\n";
+        double totalWeight = 0.0;
+
+        while (!edges.empty()) {
+            auto smallestEdge = *edges.begin();
+            edges.erase(edges.begin());
+
+            double weight = smallestEdge.first;
+            string u = smallestEdge.second.first;
+            string v = smallestEdge.second.second;
+
+            if (!inMST[v]) {
+                cout << u << " - " << v << " : " << weight << " km\n";
+                totalWeight += weight;
+                inMST[v] = true;
+
+                for (const auto &neighbor : adjList[v]) {
+                    if (!inMST[neighbor.first]) {
+                        edges.insert({neighbor.second, {v, neighbor.first}});
+                    }
+                }
+            }
+        }
+        cout << "Total MST Weight: " << totalWeight << " km\n";
+    }
+};
+
+// ------------------------- Merge Sort -------------------------
+void merge(vector<double> &arr, int left, int mid, int right) {
+    int n1 = mid - left + 1, n2 = right - mid;
+    vector<double> L(n1), R(n2);
+
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int i = 0; i < n2; i++) R[i] = arr[mid + 1 + i];
+
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) arr[k++] = L[i++];
+        else arr[k++] = R[j++];
+    }
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+void mergeSort(vector<double> &arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+
+// ------------------------- Knuth-Morris-Pratt (KMP) Algorithm -------------------------
+vector<int> buildKMPTable(const string &pattern) {
+    vector<int> lps(pattern.size(), 0);
+    int len = 0, i = 1;
+
+    while (i < pattern.size()) {
+        if (pattern[i] == pattern[len]) {
+            lps[i++] = ++len;
+        } else if (len != 0) {
+            len = lps[len - 1];
+        } else {
+            lps[i++] = 0;
+        }
+    }
+    return lps;
+}
+
+bool kmpSearch(const string &text, const string &pattern) {
+    vector<int> lps = buildKMPTable(pattern);
+    int i = 0, j = 0;
+
+    while (i < text.size()) {
+        if (text[i] == pattern[j]) {
+            i++, j++;
+            if (j == pattern.size()) return true;
+        } else if (j != 0) {
+            j = lps[j - 1];
+        } else {
+            i++;
+        }
+    }
+    return false;
+}
+
+// ------------------------- Main Program -------------------------
+int main() {
+    Graph routeGraph;
+
+    int choice;
+    do {
+        cout << "\n--- Transportation Management System ---\n";
+        cout << "1. Add Route\n";
+        cout << "2. Display Routes\n";
+        cout << "3. Find Shortest Route (Dijkstra)\n";
+        cout << "4. Find Minimum Spanning Tree (Prim's Algorithm)\n";
+        cout << "5. Sort Distances (Merge Sort)\n";
+        cout << "6. Search Substring in Text (KMP Algorithm)\n";
+        cout << "7. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                string origin, destination;
+                double distance;
+                cout << "Enter Origin: ";
+                cin.ignore();
+                getline(cin, origin);
+                cout << "Enter Destination: ";
+                getline(cin, destination);
+                cout << "Enter Distance (in km): ";
+                cin >> distance;
+                routeGraph.addRoute(origin, destination, distance);
+                cout << "Route added successfully.\n";
+                break;
+            }
+            case 2:
+                cout << "\n--- Routes ---\n";
+                routeGraph.displayRoutes();
+                break;
+
+            case 3: {
+                string source, destination;
+                cout << "Enter Source: ";
+                cin.ignore();
+                getline(cin, source);
+                cout << "Enter Destination: ";
+                getline(cin, destination);
+                routeGraph.dijkstra(source, destination);
+                break;
+            }
+            case 4:
+                routeGraph.primMST();
+                break;
+
+            case 5: {
+                int n;
+                cout << "Enter number of distances: ";
+                cin >> n;
+                vector<double> distances(n);
+                cout << "Enter distances: ";
+                for (int i = 0; i < n; i++) cin >> distances[i];
+                mergeSort(distances, 0, n - 1);
+                cout << "Sorted Distances: ";
+                for (double d : distances) cout << d << " ";
+                cout << endl;
+                break;
+            }
+
+            case 6: {
+                string text, pattern;
+                cout << "Enter Text: ";
+                cin.ignore();
+                getline(cin, text);
+                cout << "Enter Pattern to Search: ";
+                getline(cin, pattern);
+                if (kmpSearch(text, pattern)) {
+                    cout << "Pattern found in text.\n";
+                } else {
+                    cout << "Pattern not found.\n";
+                }
+                break;
+            }
+
+            case 7:
+                cout << "Exiting program.\n";
+                break;
+
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 7);
+
+    return 0;
+}
+    </pre>
+
+</body>
+</html>
