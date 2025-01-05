@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        pre {
+            background-color: #2e2e2e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Full Code</h1>
+    <pre>
+#include <bits/stdc++.h>
+using namespace std;
+
+// Structure to store station information
+struct Station {
+    string id;
+    double x, y;
+    vector<pair<string, double>> connections; // (connected station, distance)
+};
+
+// Function to calculate the Euclidean distance between two stations
+double calculateDistance(const Station& station1, const Station& station2) {
+    return sqrt(pow(station2.x - station1.x, 2) + pow(station2.y - station1.y, 2));
+}
+
+// Function to add a new station and update the network
+void addNewStation(vector<Station>& stations) {
+    string newStationId;
+    double newX, newY;
+
+    cout << "Enter the name of the new station: ";
+    cin >> newStationId;
+    cout << "Enter the coordinates (x, y) for the new station: ";
+    cin >> newX >> newY;
+
+    stations.push_back({newStationId, newX, newY});
+
+    for (size_t i = 0; i < stations.size() - 1; i++) {
+        double distance = calculateDistance(stations[i], stations.back());
+        stations[i].connections.push_back({stations.back().id, distance});
+        stations.back().connections.push_back({stations[i].id, distance});
+    }
+
+    cout << "New station " << newStationId << " added successfully!" << endl;
+}
+
+// Prim's algorithm to calculate the Minimum Spanning Tree (MST)
+void calculateMST(vector<Station>& stations) {
+    unordered_map<string, bool> visited;
+    priority_queue<pair<double, pair<string, string>>, vector<pair<double, pair<string, string>>>, greater<>> pq;
+
+    // Start with the first station
+    if (stations.empty()) return;
+    string start = stations[0].id;
+
+    // Push initial edges into the priority queue
+    for (const auto& connection : stations[0].connections) {
+        pq.push({connection.second, {start, connection.first}});
+    }
+    visited[start] = true;
+
+    double totalCost = 0;
+    cout << "--- Optimized Metro Connection Network (Minimum Spanning Tree) ---" << endl;
+
+    while (!pq.empty()) {
+        auto [cost, edge] = pq.top();
+        pq.pop();
+
+        string station1 = edge.first;
+        string station2 = edge.second;
+
+        if (visited[station2]) continue;
+
+        cout << "Connection between " << station1 << " and " << station2 << " (Distance: " << cost << ")" << endl;
+        totalCost += cost;
+        visited[station2] = true;
+
+        // Add edges of the newly visited station to the priority queue
+        for (const auto& connection : stations) {
+            if (connection.id == station2) {
+                for (const auto& next : connection.connections) {
+                    if (!visited[next.first]) {
+                        pq.push({next.second, {station2, next.first}});
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    cout << "Total connection length (cost): " << totalCost << " units." << endl;
+}
+
+// Rabin-Karp string search algorithm
+bool rabinKarpSearch(const string& text, const string& pattern) {
+    const int prime = 101;
+    int m = pattern.length();
+    int n = text.length();
+
+    if (m > n) return false;
+
+    // Calculate the hash of pattern and the first window of text
+    long long patternHash = 0, textHash = 0, h = 1;
+    for (int i = 0; i < m - 1; i++) h = (h * 256) % prime;
+
+    for (int i = 0; i < m; i++) {
+        patternHash = (256 * patternHash + pattern[i]) % prime;
+        textHash = (256 * textHash + text[i]) % prime;
+    }
+
+    for (int i = 0; i <= n - m; i++) {
+        if (patternHash == textHash) {
+            if (text.substr(i, m) == pattern) return true;
+        }
+
+        if (i < n - m) {
+            textHash = (256 * (textHash - text[i] * h) + text[i + m]) % prime;
+            if (textHash < 0) textHash += prime;
+        }
+    }
+
+    return false;
+}
+
+// Register a complaint using Rabin-Karp for station ID matching
+void registerComplaint(const vector<string>& keywords, unordered_map<string, string>& complaints, const vector<Station>& stations) {
+    string partialStationId, complaint;
+
+    cout << "Enter part of the station ID for registering a complaint: ";
+    cin >> partialStationId;
+
+    // Use Rabin-Karp to search for the partial station ID in the list of station IDs
+    bool stationFound = false;
+    string fullStationId;
+
+    for (const auto& station : stations) {
+        if (rabinKarpSearch(station.id, partialStationId)) {
+            stationFound = true;
+            fullStationId = station.id;
+            break;
+        }
+    }
+
+    if (!stationFound) {
+        cout << "Error: No matching station ID found!" << endl;
+        return;
+    }
+
+    cout << "Station ID found: " << fullStationId << endl;
+
+    cout << "Describe your complaint: ";
+    cin.ignore(); // Clear input buffer
+    getline(cin, complaint);
+
+    for (const auto& keyword : keywords) {
+        if (rabinKarpSearch(complaint, keyword)) {
+            complaints[fullStationId] = "Category: " + keyword + ", Complaint: " + complaint;
+            cout << "Complaint registered under category: " << keyword << endl;
+            return;
+        }
+    }
+
+    complaints[fullStationId] = "Category: General, Complaint: " + complaint;
+    cout << "Complaint registered under category: General" << endl;
+}
+
+// Heap-based sorting to sort stations by distance
+void sortStationsByDistance(const vector<Station>& stations) {
+    double x, y;
+    cout << "Enter the reference point coordinates (x, y): ";
+    cin >> x >> y;
+
+    priority_queue<pair<double, string>, vector<pair<double, string>>, greater<>> minHeap;
+
+    for (const auto& station : stations) {
+        double distance = sqrt(pow(station.x - x, 2) + pow(station.y - y, 2));
+        minHeap.push({distance, station.id});
+    }
+
+    cout << "--- Stations Sorted by Distance ---" << endl;
+    while (!minHeap.empty()) {
+        auto [distance, stationId] = minHeap.top();
+        minHeap.pop();
+        cout << stationId << " (Distance: " << distance << ")" << endl;
+    }
+}
+
+// Display the current network of stations and connections
+void displayNetwork(const vector<Station>& stations) {
+    cout << "--- Current Metro Network ---" << endl;
+    for (const auto& station : stations) {
+        cout << station.id << " -> ";
+        for (const auto& connection : station.connections) {
+            cout << "(" << connection.first << ", Distance: " << connection.second << ") ";
+        }
+        cout << endl;
+    }
+}
+
+// Main function
+int main() {
+    vector<Station> stations;
+    unordered_map<string, string> complaints; // Store complaints
+    vector<string> keywords = {"delay", "overcrowding", "safety", "maintenance"};
+
+    int numStations;
+
+    cout << "Welcome to the Interactive Metro Management System!" << endl;
+    cout << "Enter the number of stations in the city: ";
+    cin >> numStations;
+
+    for (int i = 0; i < numStations; i++) {
+        string stationId;
+        double x, y;
+
+        cout << "Enter the name for station " << i + 1 << ": ";
+        cin >> stationId;
+        cout << "Enter the coordinates (x, y) for station " << i + 1 << ": ";
+        cin >> x >> y;
+
+        stations.push_back({stationId, x, y});
+    }
+
+    for (size_t i = 0; i < stations.size(); i++) {
+        for (size_t j = i + 1; j < stations.size(); j++) {
+            double distance = calculateDistance(stations[i], stations[j]);
+            stations[i].connections.push_back({stations[j].id, distance});
+            stations[j].connections.push_back({stations[i].id, distance});
+        }
+    }
+
+    while (true) {
+        cout << "--- Menu ---" << endl;
+        cout << "1. Display current network" << endl;
+        cout << "2. Add a new station" << endl;
+        cout << "3. Register a complaint" << endl;
+        cout << "4. Display complaints" << endl;
+        cout << "5. Calculate minimum spanning tree for optimized connectivity" << endl;
+        cout << "6. Sort stations by distance to a point" << endl;
+        cout << "7. Exit" << endl;
+        cout << "Enter your choice: ";
+        int choice;
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                displayNetwork(stations);
+                break;
+            case 2:
+                addNewStation(stations);
+                break;
+            case 3:
+                registerComplaint(keywords, complaints, stations);
+                break;
+            case 4:
+                if (complaints.empty()) {
+                    cout << "No complaints registered yet." << endl;
+                } else {
+                    for (const auto& complaint : complaints) {
+                        cout << "Station ID: " << complaint.first << " -> " << complaint.second << endl;
+                    }
+                }
+                break;
+            case 5:
+                calculateMST(stations);
+                break;
+            case 6:
+                sortStationsByDistance(stations);
+                break;
+            case 7:
+                cout << "Exiting the program. Goodbye!" << endl;
+                return 0;
+            default:
+                cout << "Invalid choice, please try again." << endl;
+        }
+    }
+
+    return 0;
+}
+    </pre>
+
+</body>
+</html>
