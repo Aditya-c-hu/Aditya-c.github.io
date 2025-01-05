@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Environmental Impact of the Transportation Sector</title>
+    <title>Transportation Management System Features</title>
     <style>
         body {
             font-family: 'Product Sans', Arial, sans-serif;
@@ -37,15 +37,38 @@
 </head>
 <body>
 
-    <h1>Environmental Impact of the Transportation Sector</h1>
+    <div class="container">
+        
+        <h2>1. Find Shortest Route (Dijkstra’s Algorithm):</h2>
+        <ul>
+            <li>Computes the shortest path between a specified source and destination using Dijkstra’s Algorithm.</li>
+            <li>Displays the shortest distance and the sequence of locations in the path.</li>
+            <li>If no path exists, it notifies the user.</li>
+            <li>Uses a priority queue (implemented with a set) to select the next closest node during the algorithm's execution.</li>
+        </ul>
 
-    <section>
-        <h2>Key Issues</h2>
-        <p><strong>Air Pollution:</strong> Fossil fuel-powered vehicles release CO2, NOx, and particulate matter, contributing to smog and respiratory diseases.</p>
-        <p><strong>Waste Generation:</strong> End-of-life vehicles (ELVs), tires, batteries, and packaging from logistics operations create significant waste.</p>
-        <p><strong>Noise Pollution:</strong> Excessive noise from transportation affects urban living and wildlife.</p>
-        <p><strong>Traffic Congestion:</strong> Leads to higher emissions and fuel wastage, increasing pollution levels.</p>
-    </section>
+        <h2>2. Find Minimum Spanning Tree (Prim's Algorithm):</h2>
+        <ul>
+            <li>Uses Prim's Algorithm to calculate the Minimum Spanning Tree (MST) of the graph.</li>
+            <li>Outputs the edges included in the MST and their weights (distances).</li>
+            <li>Calculates the total weight of the MST, representing the minimum cost to connect all locations in the network.</li>
+        </ul>
+
+        <h2>3. Sort Distances (Merge Sort):</h2>
+        <ul>
+            <li>Takes a list of distances as input and sorts them in ascending order using Merge Sort.</li>
+            <li>Outputs the sorted distances.</li>
+            <li>Demonstrates a divide-and-conquer sorting algorithm.</li>
+        </ul>
+
+        <h2>4. Search Substring in Text (Knuth-Morris-Pratt Algorithm):</h2>
+        <ul>
+            <li>Implements the Knuth-Morris-Pratt (KMP) Algorithm to search for a substring (pattern) within a given text.</li>
+            <li>Outputs whether the pattern is found in the text.</li>
+            <li>Uses a preprocessing step to build a Longest Prefix Suffix (LPS) Table, improving search efficiency.</li>
+        </ul>
+    </div>
+    <a href="codero.html">Link to Code</a>
 
 </body>
 </html>
