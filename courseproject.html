@@ -82,19 +82,22 @@
             align-items: center;
             width: 100%;
         }
-        .course-project-button {
-            background: linear-gradient(135deg, #333333, #4d4d4d);
-            color: white;
-            font-size: 1.2em;
-            font-weight: bold;
-            padding: 15px 30px;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: background 0.3s ease;
-        }
-        .course-project-button:hover {
-            background: linear-gradient(135deg, #1a1a1a, #333333);
-        }
+button.course-project-button {
+    background: linear-gradient(135deg, #333333, #4d4d4d);
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 15px 30px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin: 5px;
+    text-align: center;
+}
+button.course-project-button:hover {
+    background: linear-gradient(135deg, #1a1a1a, #333333);
+}
         /* Responsive Design */
         @media (max-width: 768px) {
             header h1 {
@@ -168,37 +171,38 @@
             <div class="member-container">
                 <div class="member-section">
                     <p><strong>Rohan Dixit</strong></p>
-                   <div class="links">
-    <button onclick="location.href='coursereflectionrohan.html'">Course Reflection</button>
-    <button onclick="location.href='businesscaserohan.html'">Business Case</button>
+<div class="links">
+    <button onclick="location.href='coursereflectionrohan.html'" class="course-project-button">Course Reflection</button>
+    <button onclick="location.href='businesscaserohan.html'" class="course-project-button">Business Case</button>
 </div>
                 </div>
                 <div class="member-section">
                     <p><strong>Ravi</strong></p>
-                   <div class="links">
-    <button onclick="location.href='coursereflectionravi.html'">Course Reflection</button>
-    <button onclick="location.href='businesscaseravi.html'">Business Case</button>
+<div class="links">
+    <button onclick="location.href='coursereflectionravi.html'" class="course-project-button">Course Reflection</button>
+    <button onclick="location.href='businesscaseravi.html'" class="course-project-button">Business Case</button>
 </div>
                 </div>
                 <div class="member-section">
                     <p><strong>Bhuwanesh</strong></p>
-                   <div class="links">
-    <button onclick="location.href='coursereflectionbhuwanesh.html'">Course Reflection</button>
-    <button onclick="location.href='business-casebhuwanesh.html'">Business Case</button>
+<div class="links">
+    <button onclick="location.href='coursereflectionbhuwanesh.html'" class="course-project-button">Course Reflection</button>
+    <button onclick="location.href='business-casebhuwanesh.html'" class="course-project-button">Business Case</button>
 </div>
                 </div>
                 <div class="member-section">
                     <p><strong>Mustafa</strong></p>
-                 <div class="links">
-    <button onclick="location.href='coursereflectionmustafa.html'">Course Reflection</button>
-    <button onclick="location.href='businesscasemustafa.html'">Business Case</button>
+<div class="links">
+    <button onclick="location.href='coursereflectionmustafa.html'" class="course-project-button">Course Reflection</button>
+    <button onclick="location.href='businesscasemustafa.html'" class="course-project-button">Business Case</button>
 </div>
                 <div class="member-section">
                     <p><strong>Aditya</strong></p>
-                   <div class="links">
-    <button onclick="location.href='coursereflectionaditya.html'">Course Reflection</button>
-    <button onclick="location.href='businesscaseaditya.html'">Business Case</button>
+<div class="links">
+    <button onclick="location.href='coursereflectionaditya.html'" class="course-project-button">Course Reflection</button>
+    <button onclick="location.href='businesscaseaditya.html'" class="course-project-button">Business Case</button>
 </div>
+
                 </div>
             </div>
         </section>
