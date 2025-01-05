@@ -40,28 +40,12 @@
     <h1>Metro Systems</h1>
 
     <section>
-        <h2>Key Issues</h2>
-        <p>Dijkstra’s algorithm is widely used in transportation networks, like metro systems, to find the shortest path between stations. It helps passengers and operators optimize travel time, minimize transfers, and improve efficiency.Can adapt to delays or blockages.</p>
-        <p>Rabin-Karp is a string matching algorithm that uses hashing to find a substring (pattern) within a larger string (text). It's efficient for searching multiple patterns and works well for metro station name searches.Compares hash values instead of character-by-character comparisons. Can handle multiple pattern searches efficiently.</p>
-        <p> A min-heap allows you to retrieve elements in sorted order incrementally, without needing to sort the entire dataset upfront.Example: If you only need the closest 3 metro stations out of 100, you can extract just 3 elements from the heap in 
-𝑂
-(
-3
-log
-⁡
-𝑛
-)
-O(3logn), instead of sorting all 100 stations (
-𝑂
-(
-𝑛
-log
-⁡
-𝑛
-)
-O(nlogn)).
- A min-heap is well-suited for scenarios where data arrives dynamically, and you need to maintain a sorted order.If new metro stations are added to the list, they can be inserted into the heap efficiently.
-</p>
+        <h2>Key Implentation</h2>
+        <p>Dijkstra’s algorithm is widely used in transportation networks, like metro systems, to find the shortest path between stations. It helps passengers and operators optimize travel time, costs, and efficiency.</p>
+        <p>Rabin-Karp is a string matching algorithm that uses hashing to find a substring (pattern) within a larger string (text). It's efficient for searching multiple patterns and works well for metro system data processing.</p>
+        <p>A min-heap allows you to retrieve elements in sorted order incrementally, without needing to sort the entire dataset upfront. Example: If you only need the closest 3 metro stations out of 100, a min-heap can achieve this in O(3 log n) time, instead of sorting all 100 stations in O(n log n) time. This is well-suited for scenarios where data arrives dynamically, and you need to maintain a sorted order.</p>
+        <h2>Reference to Full Implementation of Metro System in C++:</h2>
+        <p>For detailed implementation, please refer to the <a href="codeR.html">full code here</a>.</p>
     </section>
 
 </body>
