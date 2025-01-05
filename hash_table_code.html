@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hash Table in C++</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        pre {
+            background-color: #2e2e2e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Hash Table in C++</h1>
+    <pre>
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+class HashTable {
+private:
+    static const int tableSize = 10;
+    list&lt;pair&lt;string, int&gt;&gt; table[tableSize];
+
+    int hash(string key) {
+        int hashValue = 0;
+        for (char c : key) {
+            hashValue += c;
+        }
+        return hashValue % tableSize;
+    }
+
+public:
+    void insert(string key, int value) {
+        int index = hash(key);
+        table[index].push_back(make_pair(key, value));
+    }
+
+    int get(string key) {
+        int index = hash(key);
+        for (auto& element : table[index]) {
+            if (element.first == key) {
+                return element.second;
+            }
+        }
+        return -1;  // Return -1 if the key is not found
+    }
+
+    void remove(string key) {
+        int index = hash(key);
+        for (auto it = table[index].begin(); it != table[index].end(); ++it) {
+            if (it->first == key) {
+                table[index].erase(it);
+                return;
+            }
+        }
+    }
+};
+
+int main() {
+    HashTable ht;
+    ht.insert("name", 100);
+    ht.insert("age", 30);
+
+    cout &lt;&lt; "Name: " &lt;&lt; ht.get("name") &lt;&lt; endl;
+    cout &lt;&lt; "Age: " &lt;&lt; ht.get("age") &lt;&lt; endl;
+
+    ht.remove("name");
+    cout &lt;&lt; "Name after removal: " &lt;&lt; ht.get("name") &lt;&lt; endl;
+
+    return 0;
+}
+    </pre>
+
+</body>
+</html>
