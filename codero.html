@@ -29,23 +29,24 @@
 #include <vector>
 #include <unordered_map>
 #include <set>
-#include <stack>
 #include <limits>
 #include <string>
-#include <algorithm>
+#include <algorithm> // For reverse()
 
 using namespace std;
 
-// ------------------------- Graph for Routes -------------------------
+// Graph class
 class Graph {
     unordered_map<string, vector<pair<string, double>>> adjList;
 
 public:
+    // Add a route between two locations
     void addRoute(const string &from, const string &to, double distance) {
         adjList[from].push_back({to, distance});
-        adjList[to].push_back({from, distance});  // Bidirectional routes
+        adjList[to].push_back({from, distance});  // Bidirectional graph
     }
 
+    // Display all routes
     void displayRoutes() {
         for (const auto &pair : adjList) {
             cout << pair.first << " -> ";
@@ -56,7 +57,7 @@ public:
         }
     }
 
-    // --------------------- Dijkstra's Algorithm ---------------------
+    // Dijkstra's Algorithm for Shortest Path
     void dijkstra(const string &source, const string &destination) {
         unordered_map<string, double> dist;
         unordered_map<string, string> parent;
@@ -77,17 +78,17 @@ public:
 
             if (curNode == destination) {
                 cout << "Shortest Distance: " << curDist << " km\nPath: ";
-                stack<string> path;
                 string node = destination;
+                vector<string> path;
                 while (node != source) {
-                    path.push(node);
+                    path.push_back(node);
                     node = parent[node];
                 }
-                path.push(source);
-                while (!path.empty()) {
-                    cout << path.top();
-                    path.pop();
-                    if (!path.empty()) cout << " -> ";
+                path.push_back(source);
+                reverse(path.begin(), path.end());
+                for (size_t i = 0; i < path.size(); ++i) {
+                    cout << path[i];
+                    if (i != path.size() - 1) cout << " -> ";
                 }
                 cout << endl;
                 return;
@@ -108,7 +109,7 @@ public:
         cout << "No path found from " << source << " to " << destination << endl;
     }
 
-    // --------------------- Prim's Algorithm for MST ---------------------
+    // Prim's Algorithm for Minimum Spanning Tree (MST)
     void primMST() {
         unordered_map<string, bool> inMST;
         set<pair<double, pair<string, string>>> edges;
@@ -152,67 +153,7 @@ public:
     }
 };
 
-// ------------------------- Merge Sort -------------------------
-void merge(vector<double> &arr, int left, int mid, int right) {
-    int n1 = mid - left + 1, n2 = right - mid;
-    vector<double> L(n1), R(n2);
-
-    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
-    for (int i = 0; i < n2; i++) R[i] = arr[mid + 1 + i];
-
-    int i = 0, j = 0, k = left;
-    while (i < n1 && j < n2) {
-        if (L[i] <= R[j]) arr[k++] = L[i++];
-        else arr[k++] = R[j++];
-    }
-    while (i < n1) arr[k++] = L[i++];
-    while (j < n2) arr[k++] = R[j++];
-}
-
-void mergeSort(vector<double> &arr, int left, int right) {
-    if (left < right) {
-        int mid = left + (right - left) / 2;
-        mergeSort(arr, left, mid);
-        mergeSort(arr, mid + 1, right);
-        merge(arr, left, mid, right);
-    }
-}
-
-// ------------------------- Knuth-Morris-Pratt (KMP) Algorithm -------------------------
-vector<int> buildKMPTable(const string &pattern) {
-    vector<int> lps(pattern.size(), 0);
-    int len = 0, i = 1;
-
-    while (i < pattern.size()) {
-        if (pattern[i] == pattern[len]) {
-            lps[i++] = ++len;
-        } else if (len != 0) {
-            len = lps[len - 1];
-        } else {
-            lps[i++] = 0;
-        }
-    }
-    return lps;
-}
-
-bool kmpSearch(const string &text, const string &pattern) {
-    vector<int> lps = buildKMPTable(pattern);
-    int i = 0, j = 0;
-
-    while (i < text.size()) {
-        if (text[i] == pattern[j]) {
-            i++, j++;
-            if (j == pattern.size()) return true;
-        } else if (j != 0) {
-            j = lps[j - 1];
-        } else {
-            i++;
-        }
-    }
-    return false;
-}
-
-// ------------------------- Main Program -------------------------
+// Main function
 int main() {
     Graph routeGraph;
 
@@ -223,9 +164,7 @@ int main() {
         cout << "2. Display Routes\n";
         cout << "3. Find Shortest Route (Dijkstra)\n";
         cout << "4. Find Minimum Spanning Tree (Prim's Algorithm)\n";
-        cout << "5. Sort Distances (Merge Sort)\n";
-        cout << "6. Search Substring in Text (KMP Algorithm)\n";
-        cout << "7. Exit\n";
+        cout << "5. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
@@ -263,43 +202,14 @@ int main() {
                 routeGraph.primMST();
                 break;
 
-            case 5: {
-                int n;
-                cout << "Enter number of distances: ";
-                cin >> n;
-                vector<double> distances(n);
-                cout << "Enter distances: ";
-                for (int i = 0; i < n; i++) cin >> distances[i];
-                mergeSort(distances, 0, n - 1);
-                cout << "Sorted Distances: ";
-                for (double d : distances) cout << d << " ";
-                cout << endl;
-                break;
-            }
-
-            case 6: {
-                string text, pattern;
-                cout << "Enter Text: ";
-                cin.ignore();
-                getline(cin, text);
-                cout << "Enter Pattern to Search: ";
-                getline(cin, pattern);
-                if (kmpSearch(text, pattern)) {
-                    cout << "Pattern found in text.\n";
-                } else {
-                    cout << "Pattern not found.\n";
-                }
-                break;
-            }
-
-            case 7:
+            case 5:
                 cout << "Exiting program.\n";
                 break;
 
             default:
                 cout << "Invalid choice. Please try again.\n";
         }
-    } while (choice != 7);
+    } while (choice != 5);
 
     return 0;
 }
